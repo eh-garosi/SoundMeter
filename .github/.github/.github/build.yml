@@ -1,1 +1,34 @@
+name: Build APK
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y python3-pip python3-venv build-essential git python3-dev openjdk-8-jdk autoconf libtool pkg-config
+          pip install cython buildozer
+
+      - name: Create virtual environment
+        run: |
+          python3 -m venv myenv
+          source myenv/bin/activate
+
+      - name: Build APK
+        run: |
+          source myenv/bin/activate
+          buildozer android debug
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
 
